@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-// status Code result
+//---------------------- status Code result
 // status code result sends an empty response with specified status code
 
 // StatusCodeResult: return new StatusCodeResult(code); 500 200
@@ -10,11 +10,18 @@ using Microsoft.AspNetCore.Mvc;
 // BadRequestResult: return new BasRequestResult(); 400
 // NotFoundResult: return NotFoundResult(); 404
 
+//-----------------------Redirect Results
+// redirect result sends either HTTP 302 or 301 response to the broswer, inorder to redirect to a specific action or url
+
+//302 found
+//301 move permanently -> if search engine already cached the old url, it auto update with new url, next ime search engine will show new url when searched
+
 namespace IActionResultExample.Controllers
 {
     public class HomeController : Controller
     {
-        [Route("book")]// book?bookid=1&isloggedin=true
+        //[Route("book")]// book?bookid=1&isloggedin=true
+        [Route("bookstore")] // if user bookmarked above link, we need redirect to updated url
         public IActionResult Index() // now this can return morethan one result
         {
             // book id should be in query
@@ -56,11 +63,17 @@ namespace IActionResultExample.Controllers
             {
                 //Response.StatusCode = 401;
                 //return Content("you are not logged in");
-                return Unauthorized("you are not logged in");
+                //return Unauthorized("you are not logged in");
+                return StatusCode(401, "get Out Of here"); // code and message
             }
 
             // by default, status code is 200
-            return File("/sample.pdf", "application/pdf");
+            //return File("/sample.pdf", "application/pdf");
+            // RedirectionToActionResult take 4 params 1. ActionName,2. controller name without "controller", 3. routeValue -> might be empty object, 4.(optional) IsPermanent
+           
+            //return new RedirectToActionResult("Books", "Store", new { }); //302 - Found
+            //return new RedirectToActionResult("Books", "Store", new { }, permanent: true); // 301 - moved Permanently
+            return new RedirectToActionResult("Books", "Store", new { }, true); // 301 - moved Permanently
         }
     }
 }
