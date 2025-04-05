@@ -16,6 +16,12 @@ using Microsoft.AspNetCore.Mvc;
 //302 found
 //301 move permanently -> if search engine already cached the old url, it auto update with new url, next ime search engine will show new url when searched
 
+
+// 3 type
+// 1. return new RedirectToActionResult("action", "controller", new {route_value}, permanent);
+// 2. return new LocalRedirectResult("local_url", permanent);
+// 3. rederectResult("url", permannent)
+
 namespace IActionResultExample.Controllers
 {
     public class HomeController : Controller
@@ -70,10 +76,22 @@ namespace IActionResultExample.Controllers
             // by default, status code is 200
             //return File("/sample.pdf", "application/pdf");
             // RedirectionToActionResult take 4 params 1. ActionName,2. controller name without "controller", 3. routeValue -> might be empty object, 4.(optional) IsPermanent
-           
+
             //return new RedirectToActionResult("Books", "Store", new { }); //302 - Found
             //return new RedirectToActionResult("Books", "Store", new { }, permanent: true); // 301 - moved Permanently
-            return new RedirectToActionResult("Books", "Store", new { }, true); // 301 - moved Permanently
+
+            //return new RedirectToActionResult("Books", "Store", new { }, true); // 301 - moved Permanently
+            //return RedirectToAction("Books", "Store", new { id=1 }); // 302
+            //return RedirectToActionPermanent("Books", "Store", new { id=1 }); // 301
+
+            //return new LocalRedirectResult("/store/books/{id}", true);// permanent or not
+            //return LocalRedirect("/store/books/{id}");//302
+            return LocalRedirectPermanent("/store/books/{id}"); //301
+
+            // to another domain
+            //return new RedirectResult("www.google.com", true); // 302 or 301
+            //return Redirect("www.google.com"); // 302
+            //return RedirectPermanent("www.google.com"); // 301
         }
     }
 }
